@@ -1,26 +1,452 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Default Title{% endblock title %}</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HFI - Secure Login Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #00796b;
+      --primary-dark: #00564d;
+      --primary-light: #00bcd4;
+      --accent: #ff6b35;
+      --gray-light: #f5f5f5;
+      --gray: #9e9e9e;
+      --gray-dark: #616161;
+      --error: #d32f2f;
+      --success: #388e3c;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Roboto', sans-serif;
+    }
 
+    body {
+      background: linear-gradient(135deg, #00bcd4, #00796b);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+      padding: 20px;
+    }
+
+    .login-container {
+      background-color: #fff;
+      padding: 2.5rem;
+      border-radius: 12px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 440px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, var(--primary), var(--primary-light));
+    }
+
+    .company-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .company-logo {
+      width: 50px;
+      height: 50px;
+      background: var(--primary);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .company-name {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+
+    .login-container h2 {
+      margin-bottom: 2rem;
+      color: var(--primary-dark);
+      font-size: 1.5rem;
+      font-weight: 500;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+      color: var(--gray-dark);
+      font-weight: 500;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 0.9rem 1rem 0.9rem 2.8rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s;
+      background-color: var(--gray-light);
+    }
+
+    .input-group input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 121, 107, 0.1);
+      background-color: #fff;
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 2.5rem;
+      color: var(--gray);
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 1rem;
+      top: 2.5rem;
+      color: var(--gray);
+      cursor: pointer;
+    }
+
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+    }
+
+    .remember-me input {
+      margin-right: 0.5rem;
+    }
+
+    .forgot-password {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+
+    .login-button {
+      width: 100%;
+      padding: 1rem;
+      background-color: var(--primary);
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      box-shadow: 0 4px 6px rgba(0, 121, 107, 0.2);
+    }
+
+    .login-button:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .login-button:active {
+      transform: translateY(0);
+    }
+
+    .divider {
+      margin: 1.5rem 0;
+      height: 1px;
+      background-color: #eee;
+      position: relative;
+    }
+
+    .divider span {
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #fff;
+      padding: 0 1rem;
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .social-login {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .social-btn {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--gray-light);
+      border: 1px solid #ddd;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .social-btn:hover {
+      background: #e9e9e9;
+      transform: translateY(-2px);
+    }
+
+    .register-link {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: var(--gray-dark);
+    }
+
+    .register-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    .notification {
+      padding: 0.8rem;
+      border-radius: 6px;
+      margin-bottom: 1.5rem;
+      display: none;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .error {
+      background-color: #ffebee;
+      color: var(--error);
+      border-left: 4px solid var(--error);
+    }
+
+    .success {
+      background-color: #e8f5e9;
+      color: var(--success);
+      border-left: 4px solid var(--success);
+    }
+
+    .password-strength {
+      height: 4px;
+      background: #eee;
+      margin-top: 0.5rem;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .strength-meter {
+      height: 100%;
+      width: 0;
+      transition: width 0.3s, background 0.3s;
+    }
+
+    .footer {
+      margin-top: 1.5rem;
+      font-size: 0.75rem;
+      color: var(--gray);
+    }
+
+    @media (max-width: 480px) {
+      .login-container {
+        padding: 2rem 1.5rem;
+      }
+      
+      .remember-forgot {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <nav class="p-4">
-        <!-- Navigation goes here -->
-    </nav>
 
-    <main>
-        {% block content %}
-        <!-- Default content goes here -->
-        {% endblock content %}
-    </main>
+  <div class="login-container">
+    <div class="company-brand">
+      <div class="company-logo">HFI</div>
+      <div class="company-name">HFI Portal</div>
+    </div>
+    
+    <h2>Secure System Login</h2>
+    
+    <div id="errorNotification" class="notification error">
+      <i class="fas fa-exclamation-circle"></i> Invalid User ID or Password!
+    </div>
+    
+    <form id="loginForm">
+      <div class="input-group">
+        <label for="userid">User ID</label>
+        <i class="fas fa-user input-icon"></i>
+        <input type="text" id="userid" placeholder="Enter your user ID" required>
+      </div>
+      
+      <div class="input-group">
+        <label for="password">Password</label>
+        <i class="fas fa-lock input-icon"></i>
+        <input type="password" id="password" placeholder="Enter your password" required>
+        <i class="fas fa-eye toggle-password" id="togglePassword"></i>
+        <div class="password-strength">
+          <div class="strength-meter" id="passwordStrength"></div>
+        </div>
+      </div>
+      
+      <div class="remember-forgot">
+        <div class="remember-me">
+          <input type="checkbox" id="remember">
+          <label for="remember">Remember me</label>
+        </div>
+        <a href="#" class="forgot-password">Forgot Password?</a>
+      </div>
+      
+      <button type="submit" class="login-button">Sign In</button>
+    </form>
+    
+    <div class="divider"><span>Or continue with</span></div>
+    
+    <div class="social-login">
+      <div class="social-btn"><i class="fab fa-google"></i></div>
+      <div class="social-btn"><i class="fab fa-microsoft"></i></div>
+      <div class="social-btn"><i class="fab fa-apple"></i></div>
+    </div>
+    
+    <p class="register-link">Don't have an account? <a href="#">Request access</a></p>
+    
+    <div class="footer">
+      <p>© 2023 HFI Systems. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </div>
+  </div>
 
-    <footer class="p-4">
-        <!-- Footer goes here -->
-    </footer>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const loginForm = document.getElementById('loginForm');
+      const errorNotification = document.getElementById('errorNotification');
+      const togglePassword = document.getElementById('togglePassword');
+      const passwordInput = document.getElementById('password');
+      const passwordStrength = document.getElementById('passwordStrength');
+      
+      // Toggle password visibility
+      togglePassword.addEventListener('click', function() {
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          togglePassword.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+          passwordInput.type = 'password';
+          togglePassword.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+      });
+      
+      // Simulate password strength (in a real app, this would be more sophisticated)
+      passwordInput.addEventListener('input', function() {
+        const password = passwordInput.value;
+        let strength = 0;
+        
+        if (password.length > 0) strength += 25;
+        if (password.length >= 8) strength += 25;
+        if (/[A-Z]/.test(password)) strength += 25;
+        if (/[0-9]/.test(password)) strength += 25;
+        
+        passwordStrength.style.width = strength + '%';
+        
+        if (strength < 50) {
+          passwordStrength.style.backgroundColor = '#f44336';
+        } else if (strength < 75) {
+          passwordStrength.style.backgroundColor = '#ff9800';
+        } else {
+          passwordStrength.style.backgroundColor = '#4caf50';
+        }
+      });
+      
+      // Form submission
+      loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const userID = document.getElementById('userid').value;
+        const password = document.getElementById('password').value;
+        const rememberMe = document.getElementById('remember').checked;
+
+        // Simple validation
+        if (!userID.trim() || !password.trim()) {
+          showError('Please fill in all fields');
+          return;
+        }
+
+        // Demo validation (replace with real backend API call)
+        if(userID === "admin" && password === "Secure@123") {
+          // Simulate successful login
+          simulateLoginSuccess(userID);
+        } else {
+          showError('Invalid User ID or Password!');
+        }
+      });
+      
+      function showError(message) {
+        errorNotification.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+        errorNotification.style.display = 'block';
+        
+        // Hide error after 5 seconds
+        setTimeout(() => {
+          errorNotification.style.display = 'none';
+        }, 5000);
+      }
+      
+      function simulateLoginSuccess(userID) {
+        // In a real application, you would redirect to dashboard or make API call
+        loginForm.reset();
+        
+        // Show success state briefly
+        const loginButton = document.querySelector('.login-button');
+        loginButton.innerHTML = '<i class="fas fa-check-circle"></i> Login Successful';
+        loginButton.style.backgroundColor = '#388e3c';
+        
+        // Redirect after a brief delay (simulation)
+        setTimeout(() => {
+          alert(`Welcome, ${userID}! You are being redirected to the dashboard.`);
+          // In a real application: window.location.href = '/dashboard';
+        }, 1000);
+      }
+    });
+  </script>
+
 </body>
 </html>
